@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.function.luo.volleyutils.MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+         />
+
+    <Button
+        android:id="@+id/bt_get"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GET请求"
+        />
+    <Button
+        android:id="@+id/bt_post"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="POST请求"
+        />
+    <Button
+        android:id="@+id/bt_single_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="单张图片下载"
+        />
+    <Button
+        android:id="@+id/bt_multiple_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="进入下一页"
+        />
+
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        />
+
+</LinearLayout>
