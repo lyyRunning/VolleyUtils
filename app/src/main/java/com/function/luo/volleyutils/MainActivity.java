@@ -12,10 +12,16 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +29,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.android.volley.Response.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,8 +42,11 @@ public class MainActivity extends AppCompatActivity {
     Button btSinglePhoto;
     @BindView(R.id.bt_multiple_photo)
     Button btMultiplePhoto;
+    @BindView(R.id.bt_json)
+    Button bt_json;
     @BindView(R.id.iv_icon)
     ImageView ivIcon;
+    private String tag = "get";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.bt_get, R.id.bt_post, R.id.bt_single_photo, R.id.bt_multiple_photo})
+    @OnClick({R.id.bt_get, R.id.bt_post, R.id.bt_single_photo, R.id.bt_multiple_photo,R.id.bt_json})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_get:
@@ -56,14 +67,43 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bt_single_photo:
                 singlePhoto();
                 break;
+            case R.id.bt_json:
+                jsonRequest();
+                break;
             case R.id.bt_multiple_photo:
                TwoActivity.launch(MainActivity.this);
-
                 break;
             default:
         }
     }
 
+    /**
+     * jsonRequest
+     */
+    private void jsonRequest() {
+        String postUrl = "http://apis.juhe.cn/mobile/get";
+        Map<String, String> map = new HashMap<>();
+        map.put("phone", "18856907654");
+        map.put("key", "5778e9d9cf089fc3b093b162036fc0e1");
+
+        String json = new Gson().toJson(map);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
+                postUrl,json, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("LUO", "========" + response);
+            }
+        },new Response.ErrorListener(){
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("LUO", "========" + error.getMessage());
+            }
+        });
+
+        jsonObjectRequest.setTag(tag);
+        MyApplication.getHttpQueues().add(jsonObjectRequest);
+    }
 
 
     /**
@@ -87,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 Log.d("LUO", "========" + response);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("LUO", "========" + error.getMessage());
@@ -95,10 +135,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //三，给请求对象设置tag标识
-        stringRequest.setTag("get");
+        stringRequest.setTag(tag);
         //四，将请求添加到请求队列中，执行网络请求
         MyApplication.getHttpQueues().add(stringRequest);
-        MyApplication.getHttpQueues().start();
+       // MyApplication.getHttpQueues().start();
     }
 
 
@@ -116,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("LUO", "========" + response);
 
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("LUO", "========" + error.getMessage());
@@ -138,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         //三，给请求对象设置tag标识
-        stringRequest.setTag("get");
+        stringRequest.setTag(tag);
         //四，将请求添加到请求队列中，执行网络请求
         MyApplication.getHttpQueues().add(stringRequest);
     }
@@ -160,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 }, 200, 200,// 指定下载后图片的最大宽高
                 ImageView.ScaleType.FIT_XY,//指定图片的缩放模式
                 Bitmap.Config.ARGB_8888,//指定图片的编码格式
-                new Response.ErrorListener() {
+                new ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("LUO", "========" + error.getMessage());
@@ -171,4 +211,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * 与Avctivity生命周期联动
+     * 其实就是在Activity退出时候或销毁时候，取消对应的网络请求，避免网络请求在后台浪费资源，
+     * 所以，我们一般在onStop()方法中通过之前设置的Tag取消网络请求：
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //通过Tag标签取消请求队列中对应的全部请求
+        MyApplication.getHttpQueues().cancelAll(tag);
+    }
 }

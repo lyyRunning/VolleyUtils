@@ -33,12 +33,17 @@
         android:text="单张图片下载"
         />
     <Button
+        android:id="@+id/bt_json"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Json请求"
+        />
+    <Button
         android:id="@+id/bt_multiple_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="进入下一页"
         />
-
 
     <ImageView
         android:id="@+id/iv_icon"
