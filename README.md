@@ -1,24 +1,34 @@
 # VolleyUtils
 这是一个简单封装的 Volley 项目
-封装Volley
-上图
 
-Image
-如何引用
 
+# 上图
+
+![Image](http://upload-images.jianshu.io/upload_images/2720645-726fd5b9b6cd95b2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+
+# 如何引用
+
+```
 	allprojects {
 		repositories {
 			...
 			maven { url 'https://www.jitpack.io' }
 		}
 	}
+```
 
+
+```
 dependencies {
 	        compile 'com.github.JiangHaiYang01:VolleyUtil:1.0.0'
 	}
+```
 
-get
+# get
 
+```
  VolleyUtils.create(this)
                 .get(urlStr, PhoneBean.class, new VolleyUtils.OnResponse<PhoneBean>() {
                     @Override
@@ -39,9 +49,11 @@ get
                         textView.setText("error--->" + error);
                     }
                 });
+```
 
-post
+# post
 
+```
  VolleyUtils.create(this)
                 .post(urlStr, PhoneBean.class, new VolleyUtils.OnResponse<PhoneBean>() {
                     @Override
@@ -62,18 +74,26 @@ post
                         textView.setText("error--->" + error);
                     }
                 });
+```
 
-img
+# img
 
+```
 VolleyUtils.create(this)
                 .loadImg(imgUrl, img);
                 
                 
                 
+```
 
+```
   VolleyUtils.create(this)
                 .loadImg(imgUrl,img,200,200,R.mipmap.ic_launcher,R.mipmap.ic_launcher);
 
+```
+
+```
   
         VolleyUtils.create(this)
                 .loadImg(imgUrl,img,R.mipmap.ic_launcher,R.mipmap.ic_launcher);
+```
